@@ -33,8 +33,16 @@
   }
 } */
 
+/* .topbar{
+  color:darkgrey;
+} */
+
 h2 {
   position: absolute; top: 0px; left: 25px;
+}
+
+.removeButton{
+  position: absolute; bottom: 25px; right: 25px;
 }
 
 .create {
