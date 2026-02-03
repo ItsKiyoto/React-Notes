@@ -1,27 +1,31 @@
-import { createElement, useState } from 'react'
+import { useState, useEffect } from 'react'
 import './App.css'
 
 let noteId = 0;
-let currentId = 0;
 
 function App() {
   const [writeState, setWriteState] = useState(0);
   const [notes, setNotes] = useState([]);
+  const [currentTitle, setTitle] = useState('Untitled');
   const [currentText, setText] = useState('');
+  const [currentId, setCurrentId] = useState(null)
 
   function setEditing(){
     setWriteState(writeState + 1);
   };
 
   function createNote(){
-    setNotes([...notes, {id: ++noteId, text : ''}]);
-    currentId = noteId;
+    setNotes([...notes, {id: ++noteId, title: "", text : ''}]);
+    setCurrentId(noteId);
   };
 
   function saveNote(){
     const updatedNotes = notes.map(note => {
+      if (currentTitle == ""){
+        setTitle("Untitled")
+      }
       if (note.id === currentId){
-        return ({id: note.id, text: currentText});
+        return ({id: note.id, title: currentTitle, text: currentText});
       } else {
         return note;
       }
@@ -30,7 +34,7 @@ function App() {
   };
 
   function test(){
-    alert(notes.map(note => note.id === currentId ? note.text : undefined))
+    alert(notes.map(note => note.id === currentId ?  `Title: ${note.title} Text: ${note.text}` : undefined));
   };
 
   return (
@@ -58,29 +62,28 @@ function App() {
       (
         <>
           {notes.map(note => (
-            <div key={note.id}>  
-                <textarea 
-                  rows={25} 
-                  cols={40}
-                  defaultValue={note.text}
-                  onChange={txt => setText(txt.target.value)}>
-                </textarea>
+            <div key={note.id} className='noteContainer'>
+              <input type='text' onChange={tle => {setTitle(tle.target.value), saveNote()}}>
+              </input>
+              <textarea 
+                rows={25} 
+                cols={40}
+                defaultValue={note.text}
+                onChange={txt => {setText(txt.target.value), saveNote()}}
+              >
+              </textarea>
             </div>
           ))}
+          <>
           <div className='Navigation'>
-            <button className='saveNote' onClick={() => saveNote()}>
-              Save
-            </button>
-            <button className='prevNote'>
-              Previous
-            </button>
             <button className='nextNote'onClick={() => test()}>
-              Next
+              Test
             </button>
+          </div>
             <button className='addNote' onClick={() => createNote()}>
                 +
             </button>
-          </div>
+          </>
         </>
       )}  
       </div>

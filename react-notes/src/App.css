@@ -41,14 +41,19 @@ h2 {
   position: absolute; top: 0px; left: 25px;
 }
 
-.removeButton{
+.welcome-body {
+  color: #b8b8b8;
+}
+
+.addNote{
   position: absolute; bottom: 25px; right: 25px;
+}
+
+.noteContainer{
+  display: flex;
+  flex-direction: column;
 }
 
 .create {
   padding: 2em;
-}
-
-.welcome-body {
-  color: #b8b8b8;
 }
