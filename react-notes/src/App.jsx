@@ -6,24 +6,22 @@ let noteId = 0;
 function App() {
   const [writeState, setWriteState] = useState(0);
   const [notes, setNotes] = useState([]);
-  const [currentTitle, setTitle] = useState('Untitled');
+  const [currentTitle, setTitle] = useState('');
   const [currentText, setText] = useState('');
-  const [currentId, setCurrentId] = useState(null)
+  const [currentId, setCurrentId] = useState(null);
+  const currentNote = notes.find(note => note.id === currentId);
 
   function setEditing(){
     setWriteState(writeState + 1);
   };
 
   function createNote(){
-    setNotes([...notes, {id: ++noteId, title: "", text : ''}]);
+    setNotes([...notes, {id: ++noteId, title: "", text : ""}]);
     setCurrentId(noteId);
   };
 
   function saveNote(){
     const updatedNotes = notes.map(note => {
-      if (currentTitle == ""){
-        setTitle("Untitled")
-      }
       if (note.id === currentId){
         return ({id: note.id, title: currentTitle, text: currentText});
       } else {
@@ -61,19 +59,30 @@ function App() {
       :
       (
         <>
-          {notes.map(note => (
-            <div key={note.id} className='noteContainer'>
-              <input type='text' onChange={tle => {setTitle(tle.target.value), saveNote()}}>
+          <div className='notesList'>
+            {notes.map(note => (
+              <button key={note.id} onClick={() => setCurrentId(note.id)}>
+                {note.title || "Untitled"}
+              </button>
+            ))}
+          </div>
+
+          {currentNote && (
+            <div key={currentNote.id} className='noteContainer'>
+              <input 
+                type='text' 
+                defaultValue={currentNote.title}
+                onChange={tle => {setTitle(tle.target.value), saveNote()}}>
               </input>
               <textarea 
                 rows={25} 
                 cols={40}
-                defaultValue={note.text}
+                defaultValue={currentNote.text}
                 onChange={txt => {setText(txt.target.value), saveNote()}}
               >
               </textarea>
             </div>
-          ))}
+          )}
           <>
           <div className='Navigation'>
             <button className='nextNote'onClick={() => test()}>
