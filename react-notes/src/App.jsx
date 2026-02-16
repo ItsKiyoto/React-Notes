@@ -6,10 +6,22 @@ function App() {
     const saved = localStorage.getItem("notes");
     return saved ? JSON.parse(saved) : []
   });
+
   const [currentTitle, setTitle] = useState('');
   const [currentText, setText] = useState('');
   const [currentId, setCurrentId] = useState(null);
   const currentNote = notes.find(note => note.id === currentId);
+  useEffect(() => {
+    localStorage.setItem("notes", JSON.stringify(notes))
+    }, [notes]); 
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      saveNote();
+    }, 50);
+    return () => clearTimeout(timer);
+  }, [currentTitle, currentText]);
+
 
   function createNote(){
     const noteId = Date.now()
@@ -28,11 +40,6 @@ function App() {
       }
     })
     setNotes(updatedNotes)
-    saveAllNotes();
-  };
-
-  function saveAllNotes(){
-    localStorage.setItem("notes", JSON.stringify(notes));
   };
 
   function setDefault(){
@@ -44,7 +51,6 @@ function App() {
   function deleteNote(){
     const updatedNotes = notes.filter(note => note.id !== currentId);
     setNotes(updatedNotes);
-    localStorage.setItem("notes", JSON.stringify(updatedNotes));
     setDefault();
   }
 
@@ -112,13 +118,13 @@ function App() {
               <input 
                 type='text' 
                 defaultValue={currentNote.title}
-                onChange={tle => {setTitle(tle.target.value), saveNote()}}>
+                onChange={tle => {setTitle(tle.target.value)}}>
               </input>
               <textarea 
                 rows={25} 
                 cols={40}
                 defaultValue={currentNote.text}
-                onChange={txt => {setText(txt.target.value), saveNote()}}
+                onChange={txt => {setText(txt.target.value)}}
               >
               </textarea>
               <button className='delete'onClick={() => deleteNote()}>
