@@ -1,23 +1,22 @@
 import { useState, useEffect } from 'react'
 import './App.css'
 
-let noteId = 0;
-
 function App() {
-  const [writeState, setWriteState] = useState(0);
-  const [notes, setNotes] = useState([]);
+  const [notes, setNotes] = useState(() => {
+    const saved = localStorage.getItem("notes");
+    return saved ? JSON.parse(saved) : []
+  });
   const [currentTitle, setTitle] = useState('');
   const [currentText, setText] = useState('');
   const [currentId, setCurrentId] = useState(null);
   const currentNote = notes.find(note => note.id === currentId);
 
-  function setEditing(){
-    setWriteState(writeState + 1);
-  };
-
   function createNote(){
-    setNotes([...notes, {id: ++noteId, title: "", text : ""}]);
+    const noteId = Date.now()
+    setNotes([...notes, {id: noteId, title: "", text : ""}]);
     setCurrentId(noteId);
+    setText('');
+    setText('');
   };
 
   function saveNote(){
@@ -29,19 +28,53 @@ function App() {
       }
     })
     setNotes(updatedNotes)
+    saveAllNotes();
+  };
+
+  function saveAllNotes(){
+    localStorage.setItem("notes", JSON.stringify(notes));
+  };
+
+  function setDefault(){
+    setCurrentId(null);
+    setTitle('');
+    setText('');
+  }
+
+  function deleteNote(){
+    const updatedNotes = notes.filter(note => note.id !== currentId);
+    setNotes(updatedNotes);
+    localStorage.setItem("notes", JSON.stringify(updatedNotes));
+    setDefault();
+  }
+
+  function loadNote(id){
+    notes.map(note => {
+      if (note.id == id){
+        setCurrentId(note.id);
+        setTitle(note.title);
+        setText(note.text);
+      }
+    });
   };
 
   function test(){
-    alert(notes.map(note => note.id === currentId ?  `Title: ${note.title} Text: ${note.text}` : undefined));
+    alert((notes == '') ? "true" : "false");
+    alert(notes);
+    alert(`Id ${currentId} Title: ${currentTitle} Notes: ${currentText}`);
+    ///alert(notes.map(note => note.id === currentId ?  `Title: ${note.title} Text: ${note.text}` : undefined));
   };
 
   return (
     <>
       <div className='topbar'>
         <h2>Note.io</h2>
+        <button className='test'onClick={() => test()}>
+          Test
+        </button>
       </div>
       <div className='welcome'> 
-        {!writeState ? (
+        {notes == '' ? (
         <div className="welcomeBody">  
           <p>
             Welcome to Note.io
@@ -50,7 +83,7 @@ function App() {
             Press the + to start noting down
           </p>
           <div className="create">
-            <button className='createBut' onClick={() => {setEditing(), createNote()}}>
+            <button className='createBut' onClick={() => {createNote()}}>
               +
             </button>
           </div>
@@ -61,13 +94,20 @@ function App() {
         <>
           <div className='notesList'>
             {notes.map(note => (
-              <button key={note.id} onClick={() => setCurrentId(note.id)}>
+              <button key={note.id} onClick={() => loadNote(note.id)}>
                 {note.title || "Untitled"}
               </button>
             ))}
           </div>
-
-          {currentNote && (
+          {currentId == null ? (
+            <div>
+              <p>
+                Open a note, or make a new one.
+              </p>
+            </div> 
+            ) 
+          :
+          (
             <div key={currentNote.id} className='noteContainer'>
               <input 
                 type='text' 
@@ -81,11 +121,14 @@ function App() {
                 onChange={txt => {setText(txt.target.value), saveNote()}}
               >
               </textarea>
+              <button className='delete'onClick={() => deleteNote()}>
+                Delete
+              </button>
             </div>
           )}
           <>
-          <div className='Navigation'>
-            <button className='nextNote'onClick={() => test()}>
+          <div className='functions'>
+            <button className='test'onClick={() => test()}>
               Test
             </button>
           </div>
@@ -93,6 +136,7 @@ function App() {
                 +
             </button>
           </>
+        
         </>
       )}  
       </div>
