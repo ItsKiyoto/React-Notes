@@ -120,6 +120,9 @@ function App() {
               <button className='delete'onClick={() => deleteNote()}>
                 Delete
               </button>
+              <button className='delete'onClick={() => setDefault()}>
+                Close
+              </button>
             </div>
           )}
           <>
