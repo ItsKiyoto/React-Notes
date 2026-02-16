@@ -64,20 +64,10 @@ function App() {
     });
   };
 
-  function test(){
-    alert((notes == '') ? "true" : "false");
-    alert(notes);
-    alert(`Id ${currentId} Title: ${currentTitle} Notes: ${currentText}`);
-    ///alert(notes.map(note => note.id === currentId ?  `Title: ${note.title} Text: ${note.text}` : undefined));
-  };
-
   return (
     <>
       <div className='topbar'>
         <h2>Note.io</h2>
-        <button className='test'onClick={() => test()}>
-          Test
-        </button>
       </div>
       <div className='welcome'> 
         {notes == '' ? (
@@ -134,9 +124,6 @@ function App() {
           )}
           <>
           <div className='functions'>
-            <button className='test'onClick={() => test()}>
-              Test
-            </button>
           </div>
             <button className='addNote' onClick={() => createNote()}>
                 +
