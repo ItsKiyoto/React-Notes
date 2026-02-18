@@ -27,7 +27,7 @@ function App() {
     const noteId = Date.now()
     setNotes([...notes, {id: noteId, title: "", text : ""}]);
     setCurrentId(noteId);
-    setText('');
+    setTitle('');
     setText('');
   };
 
@@ -65,21 +65,20 @@ function App() {
   };
 
   return (
-    <>
-      <div className='topbar'>
-        <h2>Note.io</h2>
+    <div className='app-container'>
+      <div className='header'>
+          <h2>Notes App</h2>
       </div>
-      <div className='welcome'> 
         {notes == '' ? (
-        <div className="welcomeBody">  
+        <div className="welcome">  
           <p>
-            Welcome to Note.io
+            Welcome
           </p>
           <p>
             Press the + to start noting down
           </p>
-          <div className="create">
-            <button className='createBut' onClick={() => {createNote()}}>
+          <div>
+            <button className='add-note-button' onClick={() => {createNote()}}>
               +
             </button>
           </div>
@@ -88,55 +87,60 @@ function App() {
       :
       (
         <>
-          <div className='notesList'>
-            {notes.map(note => (
-              <button key={note.id} onClick={() => loadNote(note.id)}>
-                {note.title || "Untitled"}
-              </button>
-            ))}
-          </div>
-          {currentId == null ? (
-            <div>
-              <p>
-                Open a note, or make a new one.
-              </p>
-            </div> 
-            ) 
-          :
-          (
-            <div key={currentNote.id} className='noteContainer'>
-              <input 
-                type='text' 
-                defaultValue={currentNote.title}
-                onChange={tle => {setTitle(tle.target.value)}}>
-              </input>
-              <textarea 
-                rows={25} 
-                cols={40}
-                defaultValue={currentNote.text}
-                onChange={txt => {setText(txt.target.value)}}
-              >
-              </textarea>
-              <button className='delete'onClick={() => deleteNote()}>
-                Delete
-              </button>
-              <button className='delete'onClick={() => setDefault()}>
-                Close
-              </button>
+          <div className='notesElements'>
+            <div className='notesList'>
+              {notes.map(note => (
+                <button 
+                className= {note.id === currentId ? 'selected-note' : 'list-buttons'} 
+                key={note.id} 
+                onClick={() => loadNote(note.id)}>
+                  {note.title || "Untitled"}
+                </button>
+              ))}
             </div>
-          )}
-          <>
-          <div className='functions'>
+            {currentId == null ? (
+              <div className='notesMessage'>
+                <p>
+                  Open a note, or make a new one.
+                </p>
+              </div>
+            ) 
+            :
+            (
+              <div key={currentNote.id} className='noteContainer'>
+                <input 
+                  className='title-box'
+                  type='text' 
+                  placeholder='Untitled'
+                  defaultValue={currentNote.title}
+                  onChange={tle => {setTitle(tle.target.value)}}>
+                </input>
+                <textarea 
+                  className='text-box'
+                  rows={20} 
+                  cols={40}
+                  placeholder='Write a note!'
+                  defaultValue={currentNote.text}
+                  onChange={txt => {setText(txt.target.value)}}
+                >
+                </textarea>
+                <div className='function-buttons'>
+                  <button className='delete-button'onClick={() => deleteNote()}>
+                    Delete
+                  </button>
+                  <button className='close-button'onClick={() => setDefault()}>
+                    Close
+                  </button>
+                </div>
+              </div>
+            )}
+          <button className='add-note-button' onClick={() => createNote()}>
+              +
+          </button>
           </div>
-            <button className='addNote' onClick={() => createNote()}>
-                +
-            </button>
-          </>
-        
         </>
       )}  
-      </div>
-    </>
+    </div>
   )
 }
 
